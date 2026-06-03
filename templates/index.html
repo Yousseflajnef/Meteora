@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meteora{% if current %} - {{ current.city }}{% endif %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<!--index was written with the help of claude with the choice of certain elements-->
+<body class="{{ current.bg_class if current else 'bg-clear-day' }}">
+
+
+
+  <div class="app-container {{ 'centered' if not current else ''}}">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <a href="/" class="logo">
+        <i data-lucide="cloud-sun" class="logo-icon"></i>
+        Meteora
+      </div>
+      </a>
+    </header>
+
+    <!--search-->
+    <form method="POST" action="/" class="search-wrapper">
+      <div class="search-box">
+        <i data-lucide="search" class="search-icon-svg"></i>
+        <input
+          type="text"
+          name="city"
+          id="cityInput"
+          placeholder="Enter city(Ex: paris)"
+          autocomplete="off"
+          value="{{ city }}"
+        />
+        <button type="submit" id="searchBtn">
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+
+      {% if error %}
+      <div class="error-msg">{{ error }}</div>
+      {% endif %}
+    </form>
+
+    {% if current %}
+    <!--results-->
+    <div class="results">
+
+      <!--current weather card-->
+      <div class="card current-card">
+        <div class="current-top">
+          <div class="current-left">
+            <div class="city-name">{{ current.city }}</div>
+            <div class="country-name">{{ current.country }}</div>
+            <div class="city-time">{{ current.local_time}}</div>
+            <div class="condition-text">{{ current.condition }}</div>
+          </div>
+          <div class="current-right">
+            <div class="weather-icon-big">
+              <i data-lucide="{{ current.icon }}" class="weather-icon-big-svg"></i>
+            </div>
+            <div class="temp-big">{{ current.temp }}°</div>
+          </div>
+        </div>
+
+        <div class="details-row">
+          <div class="detail-item">
+            <i data-lucide="thermometer" class="detail-icon-svg"></i>
+            <span class="detail-label">Feels like</span>
+            <span class="detail-val">{{ current.feels_like }}°C</span>
+          </div>
+          <div class="detail-item">
+            <i data-lucide="droplets" class="detail-icon-svg"></i>
+            <span class="detail-label">Humidity</span>
+            <span class="detail-val">{{ current.humidity }}%</span>
+          </div>
+          <div class="detail-item">
+            <i data-lucide="wind" class="detail-icon-svg"></i>
+            <span class="detail-label">Wind</span>
+            <span class="detail-val">{{ current.wind }} km/h</span>
+          </div>
+        </div>
+      </div>
+
+      {% if suggestions %}
+      <!--AI Suggestions-->
+      <div class="card suggestions-card">
+        <div class="card-title">
+          <i data-lucide="sparkles" class="title-icon"></i>
+          AI Suggestions
+        </div>
+        <ul class="suggestions-list">
+          {% for suggestion in suggestions %}
+          <li>
+            <i data-lucide="circle-dot" class="sug-icon"></i>
+            <span>{{ suggestion }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if forecast %}
+      <!--forecast-->
+      <div class="card forecast-card">
+        <div class="card-title">
+          <i data-lucide="calendar-days" class="title-icon"></i>
+          Forcast
+        </div>
+        <div class="forecast-list">
+          {% for day in forecast %}
+          <div class="forecast-row">
+            <span class="forecast-date">{{ day.date }}</span>
+            <i data-lucide="{{ day.icon }}" class="forecast-icon"></i>
+            <span class="forecast-desc">{{ day.desc }}</span>
+            <span class="forecast-temp">{{ day.temp }}°C</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+    {% endif %}
+
+  </div>
+  <footer class="footer">
+   Meteora © 2026
+  </footer>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
